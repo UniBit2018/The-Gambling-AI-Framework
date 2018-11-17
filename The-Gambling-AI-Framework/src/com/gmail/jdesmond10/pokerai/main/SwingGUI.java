@@ -106,74 +106,65 @@ public final class SwingGUI extends JFrame implements Client, ActionListener {
 
 	@Override
 	public void actionPerformed(final ActionEvent e) {
-
 		// Buttons will perform one way if you are a client and another
 		// otherwise.
-		if (isClient) {
-			if (semaphore.availablePermits() > 0) {
-				semaphore.drainPermits();
-			}
+		if (isClient == false) {
+			return;
+		}
 
-			if (e.getSource() == betButton) {
+		if (semaphore.availablePermits() > 0) {
+			semaphore.drainPermits();
+		}
 
-				try {
-					final int nextBetVal = Integer.parseInt(amountField
-							.getText());
-					setNextAction(new BettingAction(nextBetVal));
-					semaphore.release();
-				} catch (final NumberFormatException exc) {
-					Main.systemPrint("Amount field must be an integer value");
-				}
-
-			} else if (e.getSource() == foldButton) {
-				nextAction = BettingAction.FOLD;
+		if (e.getSource() == betButton) {
+			try {
+				final int nextBetVal = Integer.parseInt(amountField
+						.getText());
+				setNextAction(new BettingAction(nextBetVal));
 				semaphore.release();
+			} catch (final NumberFormatException exc) {
+				Main.systemPrint("Amount field must be an integer value");
 			}
-
-			/* Helper Bet Buttons */
-			else if (e.getSource() == callButton) {
-				amountField.setText(String.valueOf(state.getCallAmount()));
-			} else if (e.getSource() == potSizedBetButton) {
-				amountField.setText(String.valueOf(state.potSize));
-			} else if (e.getSource() == allInBetButton) {
-				amountField.setText(String.valueOf(state.getMaxBetAmount()));
-			}
-
-			else if (e.getSource() == increaseBetButton) {
-				try {
-					int currentVal = Integer.parseInt(amountField.getText());
-					currentVal++;
-					// Don't allow the increaseBetButton to increase above the
-					// maximum bet value.
-					if (state.getMaxBetAmount() >= currentVal) {
-						amountField.setText(String.valueOf(currentVal));
-					}
-				} catch (final NumberFormatException exc) {
-					; // do nothing?
+		} else if (e.getSource() == foldButton) {
+			nextAction = BettingAction.FOLD;
+			semaphore.release();
+		}
+		/* Helper Bet Buttons */
+		else if (e.getSource() == callButton) {
+			amountField.setText(String.valueOf(state.getCallAmount()));
+		} else if (e.getSource() == potSizedBetButton) {
+			amountField.setText(String.valueOf(state.potSize));
+		} else if (e.getSource() == allInBetButton) {
+			amountField.setText(String.valueOf(state.getMaxBetAmount()));
+		} else if (e.getSource() == increaseBetButton) {
+			try {
+				int currentVal = Integer.parseInt(amountField.getText());
+				currentVal++;
+				// Don't allow the increaseBetButton to increase above the
+				// maximum bet value.
+				if (state.getMaxBetAmount() >= currentVal) {
+					amountField.setText(String.valueOf(currentVal));
 				}
-			} else if (e.getSource() == decreaseBetButton) {
-				try {
-					int currentVal = Integer.parseInt(amountField.getText());
-					currentVal--;
-					// Don't allow decreaseBetButton to decrease below the
-					// minimum
-					// bet value.
-					if (state.getCallAmount() <= currentVal) {
-						amountField.setText(String.valueOf(currentVal));
-					}
-				} catch (final NumberFormatException exc) {
-					; // do nothing?
-				}
+			} catch (final NumberFormatException exc) {
+				; // do nothing?
 			}
-
-			// Default case
-			else {
-				Main.systemPrint("Unkown Action Event Source");
+		} else if (e.getSource() == decreaseBetButton) {
+			try {
+				int currentVal = Integer.parseInt(amountField.getText());
+				currentVal--;
+				// Don't allow decreaseBetButton to decrease below the
+				// minimum
+				// bet value.
+				if (state.getCallAmount() <= currentVal) {
+					amountField.setText(String.valueOf(currentVal));
+				}
+			} catch (final NumberFormatException exc) {
+				; // do nothing?
 			}
 		}
-		// If the GUI isn't a client, here's how to handle buttons
+		// Default case
 		else {
-
+			Main.systemPrint("Unkown Action Event Source");
 		}
 	}
 

@@ -193,21 +193,23 @@ public class Main {
 	 * @param message
 	 */
 	public static void systemPrint(final String message) {
-		if (SHOULD_PRINT) {
-			StackTraceElement methodLocation;
-			if (SHOULD_PRINT_SOURCE) {
-				methodLocation = Thread.currentThread().getStackTrace()[2];
+		if (SHOULD_PRINT == false) {
+			return;
+		}
+		
+		StackTraceElement methodLocation;
+		if (SHOULD_PRINT_SOURCE == true) {
+			methodLocation = Thread.currentThread().getStackTrace()[2];
 
-				// The source for messages coming from importantSystemPrint
-				// should be stack element #3
-				if (methodLocation.getMethodName() == "importantSystemPrint") {
-					methodLocation = Thread.currentThread().getStackTrace()[3];
-				}
-				System.out.println("	--" + message + "\n" + methodLocation);
-			} else {
-				System.out.println(message);
+			// The source for messages coming from importantSystemPrint
+			// should be stack element #3
+			if (methodLocation.getMethodName() == "importantSystemPrint") {
+				methodLocation = Thread.currentThread().getStackTrace()[3];
 			}
-
+			
+			System.out.println("	--" + message + "\n" + methodLocation);
+		} else {
+			System.out.println(message);
 		}
 	}
 
@@ -235,7 +237,6 @@ public class Main {
 	 *            the current {@link GameState}
 	 */
 	public static void updateState(final GameState state) {
-
 		SwingGUI.getInstance().updateState(state);
 	}
 
@@ -245,7 +246,6 @@ public class Main {
 
 	/**
 	 * Sets the names of the GUI clients.
-	 * 
 	 */
 	private static void setNames(final List<Client> clients) {
 		SwingGUI.getInstance().setPlayerOneName(clients.get(0).getName());
